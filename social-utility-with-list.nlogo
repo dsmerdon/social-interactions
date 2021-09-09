@@ -60,7 +60,11 @@ to setup
       set my-choice i
       set color item i colours
       set private-values map [ v -> random-normal v standard-dev ] public-values-list
-      set private-conformism conformism ;;(Homogenous conformism)
+      set private-conformism n-values n [ i1 ->
+        n-values n [ i2 ->
+          ifelse-value i1 = i2 [ 0 ] [ conformism ]
+        ]
+      ]
     ]
   ]
 
@@ -91,7 +95,7 @@ to-report best-choice
     let n table:get t choice
     let proportion-with-that-choice n / count link-neighbors
     ; the next line is probably wrong, but you can fix that:
-    let social-utility 2 * conformism * proportion-with-that-choice
+    let social-utility 2 * (item choice item my-choice private-conformism) * proportion-with-that-choice
     let score social-utility - (item my-choice private-values - item choice private-values)
     table:put t choice score
   ]
